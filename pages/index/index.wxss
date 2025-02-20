@@ -1,13 +1,16 @@
 /* 页面容器 */
 .container {
-    display: block !important;
-    width: 100%;
-    min-height: 100vh;
-    background: #f5f5f5;
-    /* 新增安全区域 */
-    padding-top: 180rpx; /* 胶囊按钮高度+状态栏高度 */
-    box-sizing: border-box;
-    /* 添加其他必要样式 */
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding-top: 0 !important; /* 移除安全区域padding */
+}
+
+.scroll-container {
+    flex: 1;
+    overflow: hidden;
+    padding-top: 160rpx; /* 将安全区域padding移到这里 */
 }
 
 /* 顶部形象图 */
@@ -30,6 +33,7 @@
     position: relative;
     z-index: 2;
     background: rgba(255,255,255,0.95);
+    margin-bottom: 100rpx; /* 增加底部留白 */
 }
 
 .title {
@@ -99,9 +103,11 @@
 /* 新增轮播样式 */
 .swiper-container {
   width: 750rpx;
-  height: 820rpx; /* 增加120rpx高度 */
+  height: 820rpx; 
   padding: 0 30rpx;
   margin: 0 auto 30rpx;
+  /* 新增背景色覆盖测试样式 */
+  background: transparent !important;
 }
 
 /* 轮播项动态效果 */

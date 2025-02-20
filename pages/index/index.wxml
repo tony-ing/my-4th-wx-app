@@ -1,46 +1,53 @@
-<!-- 首页容器 -->
+<!-- 修正容器结构 -->
 <view class="container">
-    <!-- 在container顶部添加自定义导航栏 -->
-    <view class="custom-nav" style="{{navStyle}}">
-        <text class="nav-title">按导小院</text>
-    </view>
-    
-    <!-- 替换原有图片为轮播组件 -->
-    <swiper 
-        indicator-dots="{{true}}"
-        autoplay="{{true}}"
-        interval="3000"
-        duration="500"
-        circular="{{true}}"
-        previous-margin="30rpx"
-        next-margin="30rpx"
-        style="height: 400rpx; background: #eee;"
-        class="swiper-container"
+    <scroll-view 
+        scroll-y 
+        enhanced
+        show-scrollbar="{{false}}"
+        class="scroll-container"
     >
-        <block wx:for="{{imgUrls}}" wx:key="*this">
-            <swiper-item>
-                <image 
-                    src="{{item}}" 
-                    mode="aspectFill" 
-                    class="swiper-image {{activeIndex === index ? 'active' : ''}}"
-                    bindtap="onSwipeTap"
-                    data-index="{{index}}"
-                />
-            </swiper-item>
-        </block>
-    </swiper>
-    
-    <!-- 在轮播和介绍之间添加场地信息 -->
-    <view class="facility-info">
-        <image src="/images/icons/location.png" class="info-icon"/>
-        <text class="info-text">北京市海淀区禅意路8号</text>
-        <image src="/images/icons/time.png" class="info-icon"/>
-        <text class="info-text">每日 9:00 - 18:00</text>
-    </view>
-    
-    <!-- 文字介绍区域 -->
-    <view class="intro-card">
-        <text class="title">禅意生活空间</text>
-        <text class="desc">在喧嚣都市中辟一处静所，通过茶道、香道、花艺等传统文化体验，让身心回归自然本真。我们定期举办禅修工作坊、冥想课程和艺术雅集，为您打造专属的精神栖息地。</text>
-    </view>
+        <!-- 将导航栏移到scroll-view外部 -->
+        <view class="custom-nav" style="{{navStyle}}">
+            <text class="nav-title">按导小院</text>
+        </view>
+        
+        <!-- 替换原有图片为轮播组件 -->
+        <swiper 
+            indicator-dots="{{true}}"
+            autoplay="{{true}}"
+            interval="3000"
+            duration="500"
+            circular="{{true}}"
+            previous-margin="30rpx"
+            next-margin="30rpx"
+            style="background: #eee;"
+            class="swiper-container"
+        >
+            <block wx:for="{{imgUrls}}" wx:key="*this">
+                <swiper-item>
+                    <image 
+                        src="{{item}}" 
+                        mode="aspectFill" 
+                        class="swiper-image {{activeIndex === index ? 'active' : ''}}"
+                        bindtap="onSwipeTap"
+                        data-index="{{index}}"
+                    />
+                </swiper-item>
+            </block>
+        </swiper>
+        
+        <!-- 在轮播和介绍之间添加场地信息 -->
+        <view class="facility-info">
+            <image src="/images/user.png" class="info-icon"/>
+            <text class="info-text">厦门市湖里区吕岭路惠和石文化园</text>
+            <image src="/images/home.png" class="info-icon"/>
+            <text class="info-text">每日 9:00 - 18:00</text>
+        </view>
+        
+        <!-- 文字介绍区域 -->
+        <view class="intro-card">
+            <text class="title">禅意生活空间</text>
+            <text class="desc">在喧嚣都市中辟一处静所，通过茶道、香道、花艺等传统文化体验，让身心回归自然本真。我们定期举办禅修工作坊、冥想课程和艺术雅集，为您打造专属的精神栖息地。</text>
+        </view>
+    </scroll-view>
 </view>
