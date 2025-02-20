@@ -9,6 +9,14 @@ Page({
     indicatorDots: true,
     autoplay: true,
     interval: 3000,
-    duration: 500
+    duration: 500,
+    navStyle: 'top: 80rpx;' // 初始值
+  },
+  onLoad() {
+    // 获取胶囊按钮位置信息
+    const menuInfo = wx.getMenuButtonBoundingClientRect()
+    this.setData({
+      navStyle: `top: ${menuInfo.top}px; height: ${menuInfo.height}px;`
+    })
   }
 })

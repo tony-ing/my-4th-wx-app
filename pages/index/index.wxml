@@ -1,5 +1,10 @@
 <!-- 首页容器 -->
 <view class="container">
+    <!-- 在container顶部添加自定义导航栏 -->
+    <view class="custom-nav" style="{{navStyle}}">
+        <text class="nav-title">按导小院</text>
+    </view>
+    
     <!-- 替换原有图片为轮播组件 -->
     <swiper 
         indicator-dots="{{true}}"
@@ -19,6 +24,14 @@
             </swiper-item>
         </block>
     </swiper>
+    
+    <!-- 在轮播和介绍之间添加场地信息 -->
+    <view class="facility-info">
+        <image src="/images/icons/location.png" class="info-icon"/>
+        <text class="info-text">北京市海淀区禅意路8号</text>
+        <image src="/images/icons/time.png" class="info-icon"/>
+        <text class="info-text">每日 9:00 - 18:00</text>
+    </view>
     
     <!-- 文字介绍区域 -->
     <view class="intro-card">
