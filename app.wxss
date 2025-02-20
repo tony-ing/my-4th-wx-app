@@ -10,10 +10,11 @@
 } 
 
 /* 临时测试样式 */
-swiper {
-  background: red !important;
+/* swiper {
+  background: rgb(255, 255, 255) !important;
   height: 700rpx !important;
 }
 image {
-  border: 2rpx solid blue !important;
+  /* border: 2rpx solid blue !important; 
 } 
+*/

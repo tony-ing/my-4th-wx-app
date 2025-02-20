@@ -98,23 +98,32 @@
 
 /* 新增轮播样式 */
 .swiper-container {
-  width: 690rpx;
-  height: 700rpx;
-  margin: 0 auto 30rpx; /* 去除顶部margin */
-  border-radius: 16rpx;
-  overflow: hidden;
-  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.1);
+  width: 750rpx;
+  height: 820rpx; /* 增加120rpx高度 */
+  padding: 0 30rpx;
+  margin: 0 auto 30rpx;
+}
+
+/* 轮播项动态效果 */
+swiper-item {
+  height: 820rpx; /* 与容器高度一致 */
+  box-sizing: border-box;
+  transform: scale(0.96); /* 仅缩小不透明 */
+  transition: transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+swiper-item.active {
+  transform: scale(1);
+  /* 保持不透明 */
+  z-index: 1; /* 确保当前项在上层 */
 }
 
 .swiper-image {
   width: 100%;
   height: 100%;
-}
-
-/* 新增：确保图片容器比例 */
-.swiper-item {
-  width: 100%;
-  height: 100%;
+  object-fit: cover; /* 确保图片完整显示 */
+  border-radius: 16rpx;
+  transition: transform 0.3s ease;
 }
 
 /* 原有样式保持不变 */
@@ -149,7 +158,7 @@
   align-items: center;
   padding: 30rpx 40rpx;
   margin: 40rpx 30rpx;
-  background: rgba(255,255,255,0.9);
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 12rpx;
   box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.05);
 }

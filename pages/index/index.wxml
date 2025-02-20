@@ -11,15 +11,20 @@
         autoplay="{{true}}"
         interval="3000"
         duration="500"
+        circular="{{true}}"
+        previous-margin="30rpx"
+        next-margin="30rpx"
         style="height: 400rpx; background: #eee;"
         class="swiper-container"
     >
-        <block wx:for="{{imgUrls}}" wx:key="index">
+        <block wx:for="{{imgUrls}}" wx:key="*this">
             <swiper-item>
                 <image 
                     src="{{item}}" 
                     mode="aspectFill" 
-                    style="width:100%;height:100%;"
+                    class="swiper-image {{activeIndex === index ? 'active' : ''}}"
+                    bindtap="onSwipeTap"
+                    data-index="{{index}}"
                 />
             </swiper-item>
         </block>
