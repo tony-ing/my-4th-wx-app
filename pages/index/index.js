@@ -26,5 +26,14 @@ Page({
     this.setData({
       activeIndex: e.detail.current
     })
+  },
+  // 新增导航点击事件
+  onNavigate() {
+    wx.openLocation({
+      latitude: 24.492155, // 实际纬度
+      longitude: 118.145378, // 实际经度
+      name: '惠和石文化园',
+      address: '厦门市湖里区吕岭路惠和石文化园'
+    })
   }
 })
