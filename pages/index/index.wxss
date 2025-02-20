@@ -10,7 +10,7 @@
 .scroll-container {
     flex: 1;
     overflow: hidden;
-    padding-top: 160rpx; /* 将安全区域padding移到这里 */
+    padding-top: 150rpx; /* 增加顶部间距 */
 }
 
 /* 顶部形象图 */
@@ -100,36 +100,28 @@
   line-height: 1.6;
 }
 
-/* 新增轮播样式 */
+/* 调整轮播样式 */
 .swiper-container {
-  width: 750rpx;
-  height: 820rpx; 
-  padding: 0 30rpx;
-  margin: 0 auto 30rpx;
-  /* 新增背景色覆盖测试样式 */
-  background: transparent !important;
+  width: 100%; /* 全屏宽度 */
+  height: 750rpx; /* 根据需求调整高度 */
+  margin: 0;
+  border-radius: 0; /* 移除圆角 */
+  margin-top: 40rpx; /* 新增顶部间距 */
 }
 
-/* 轮播项动态效果 */
 swiper-item {
-  height: 820rpx; /* 与容器高度一致 */
-  box-sizing: border-box;
-  transform: scale(0.96); /* 仅缩小不透明 */
-  transition: transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-}
-
-swiper-item.active {
-  transform: scale(1);
-  /* 保持不透明 */
-  z-index: 1; /* 确保当前项在上层 */
+  width: 100% !important;
+  height: 100%;
+  transform: scale(1) !important; /* 取消缩放效果 */
+  opacity: 1 !important;
+  padding: 0;
 }
 
 .swiper-image {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* 确保图片完整显示 */
-  border-radius: 16rpx;
-  transition: transform 0.3s ease;
+  border-radius: 0; /* 移除圆角 */
+  object-fit: cover;
 }
 
 /* 原有样式保持不变 */
