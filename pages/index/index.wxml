@@ -1,0 +1,15 @@
+<!-- 首页容器 -->
+<view class="container">
+    <!-- 顶部形象图 -->
+    <image 
+        src="/images/homeimage/xm_adxy.jpg" 
+        mode="widthFix" 
+        class="main-image"
+    />
+    
+    <!-- 文字介绍区域 -->
+    <view class="intro-card">
+        <text class="title">禅意生活空间</text>
+        <text class="desc">在喧嚣都市中辟一处静所，通过茶道、香道、花艺等传统文化体验，让身心回归自然本真。我们定期举办禅修工作坊、冥想课程和艺术雅集，为您打造专属的精神栖息地。</text>
+    </view>
+</view>
