@@ -13,7 +13,9 @@ Page({
     navStyle: 'top: 80rpx;', // 初始值
     circular: true, // 开启循环模式
     activeIndex: 0,
-    scrollPadding: 'padding-top: 0px;' // 初始值
+    scrollPadding: 'padding-top: 0px;', // 初始值
+    categories: ['正念按导', '静心茶会', '节气茶会', '按导辅材'],
+    activeCategory: 0
   },
   onLoad() {
     // 获取胶囊按钮位置信息
@@ -38,5 +40,9 @@ Page({
       name: '惠和石文化园',
       address: '厦门市湖里区吕岭路惠和石文化园'
     })
+  },
+  onCategoryTap(e) {
+    const index = e.currentTarget.dataset.index
+    this.setData({ activeCategory: index })
   }
 })

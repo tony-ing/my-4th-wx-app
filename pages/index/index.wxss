@@ -25,7 +25,7 @@
 .intro-card {
     background: #fff;
     padding: 40rpx;
-    margin: 60rpx 30rpx 60rpx;
+    margin: 40rpx 30rpx 20rpx; /* 上40 左右30 下20 */
     border-radius: 12rpx;
     box-shadow: 0 8rpx 30rpx -10rpx rgba(0,0,0,0.12);
     box-sizing: border-box;
@@ -33,7 +33,6 @@
     position: relative;
     z-index: 2;
     background: rgba(255,255,255,0.95);
-    margin-bottom: 100rpx; /* 增加底部留白 */
     margin-top: 20rpx;
 }
 
@@ -161,12 +160,11 @@ swiper-item {
 }
 
 .nav-title {
-  font-size: 40rpx;
-  color: #5a4d3e;
+  font-size: 28rpx; /* 与facility-info一致 */
+  color: #7a6e5f;   /* 使用场地信息同款颜色 */
   font-weight: 600;
-  font-family: 'STKaiti', serif;
-  text-shadow: 1rpx 1rpx 2rpx rgba(0,0,0,0.1);
-  line-height: 1.2; /* 确保文字垂直居中 */
+  padding: 16rpx 32rpx; /* 减少垂直padding */
+  border-bottom: 0.5rpx solid rgba(0,0,0,0.05); /* 细化分割线 */
 }
 
 /* 新增场地信息样式 */
@@ -212,4 +210,52 @@ swiper-item {
 .navi-label {
   font-size: 22rpx; /* 缩小2rpx */
   color: #7a6e5f;
+}
+
+/* 优化分类导航为标签页样式 */
+.activity-nav {
+  background: #fff;
+  margin: -10rpx 30rpx 40rpx; /* 上方负margin抵消间距 */
+  border-radius: 16rpx;
+  box-shadow: 0 8rpx 30rpx -10rpx rgba(0,0,0,0.08);
+}
+
+.nav-list {
+  display: flex;
+  padding: 20rpx 0;
+  justify-content: space-around;
+}
+
+.nav-item {
+  flex: 1;
+  text-align: center;
+  padding: 24rpx 0;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.nav-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 4rpx;
+  background: #5a4d3e;
+  transition: width 0.3s ease;
+}
+
+.nav-item.active::after {
+  width: 60%;
+}
+
+.nav-text {
+  font-size: 30rpx;
+  color: #7a6e5f;
+}
+
+.nav-item.active .nav-text {
+  color: #5a4d3e;
+  font-weight: 500;
 }
