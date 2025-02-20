@@ -1,7 +1,13 @@
 /* 页面容器 */
 .container {
-    background: #f5f5f5;
+    display: block !important;
+    width: 100%;
     min-height: 100vh;
+    background: #f5f5f5;
+    /* 新增安全区域 */
+    padding-top: 160rpx; /* 胶囊按钮高度+状态栏高度 */
+    box-sizing: border-box;
+    /* 添加其他必要样式 */
 }
 
 /* 顶部形象图 */
@@ -16,11 +22,14 @@
 .intro-card {
     background: #fff;
     padding: 40rpx;
-    margin: 30rpx;
+    margin: 200rpx 30rpx 60rpx;
     border-radius: 12rpx;
     box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.05);
     box-sizing: border-box;
     width: calc(100% - 60rpx);
+    position: relative;
+    z-index: 2;
+    background: rgba(255,255,255,0.95);
 }
 
 .title {
@@ -85,4 +94,33 @@
   font-size: 28rpx;
   color: #7a6e5f;
   line-height: 1.6;
+}
+
+/* 新增轮播样式 */
+.swiper-container {
+  width: 690rpx;
+  height: 700rpx;
+  margin: 0 auto 30rpx; /* 去除顶部margin */
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.1);
+}
+
+.swiper-image {
+  width: 100%;
+  height: 100%;
+}
+
+/* 新增：确保图片容器比例 */
+.swiper-item {
+  width: 100%;
+  height: 100%;
+}
+
+/* 原有样式保持不变 */
+.intro-section {
+  padding: 32rpx;
+  background: #f8f5f2;
+  margin: 24rpx;
+  border-radius: 12rpx;
 }

@@ -1,11 +1,24 @@
 <!-- 首页容器 -->
 <view class="container">
-    <!-- 顶部形象图 -->
-    <image 
-        src="/images/homeimage/xm_adxy.jpg" 
-        mode="widthFix" 
-        class="main-image"
-    />
+    <!-- 替换原有图片为轮播组件 -->
+    <swiper 
+        indicator-dots="{{true}}"
+        autoplay="{{true}}"
+        interval="3000"
+        duration="500"
+        style="height: 400rpx; background: #eee;"
+        class="swiper-container"
+    >
+        <block wx:for="{{imgUrls}}" wx:key="index">
+            <swiper-item>
+                <image 
+                    src="{{item}}" 
+                    mode="aspectFill" 
+                    style="width:100%;height:100%;"
+                />
+            </swiper-item>
+        </block>
+    </swiper>
     
     <!-- 文字介绍区域 -->
     <view class="intro-card">

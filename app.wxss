@@ -1,5 +1,5 @@
 /**app.wxss**/
-.container {
+.global-container {
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -7,4 +7,13 @@
   justify-content: space-between;
   padding: 200rpx 0;
   box-sizing: border-box;
+} 
+
+/* 临时测试样式 */
+swiper {
+  background: red !important;
+  height: 700rpx !important;
+}
+image {
+  border: 2rpx solid blue !important;
 } 
