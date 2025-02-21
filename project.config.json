@@ -1,4 +1,6 @@
 {
+  "miniprogramRoot": "miniprogram/",
+  "cloudfunctionRoot": "cloudfunctions/",
   "appid": "wx2a567fbb5d864ddb",
   "compileType": "miniprogram",
   "libVersion": "3.7.8",
@@ -24,5 +26,7 @@
   "editorSetting": {
     "tabIndent": "insertSpaces",
     "tabSize": 2
-  }
+  },
+  "projectname": "miniprogram-4",
+  "srcMiniprogramRoot": "miniprogram/"
 }
