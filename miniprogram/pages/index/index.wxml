@@ -27,7 +27,7 @@
                 <swiper-item>
                     <image 
                         src="{{item}}" 
-                        mode="scaleToFill"
+                        mode="aspectFill"
                         class="swiper-image {{activeIndex === index ? 'active' : ''}}"
                         bindtap="onSwipeTap"
                         data-index="{{index}}"
