@@ -66,5 +66,27 @@
                 </view>
             </view>
         </view>
+
+        <!-- 在activity-nav下方添加活动列表 -->
+        <view class="activity-list">
+            <block wx:for="{{activities[activeCategory]}}" wx:key="index">
+                <view class="activity-item">
+                    <view class="activity-header">
+                        <text class="activity-title">{{item.title}}</text>
+                        <text class="activity-status {{item.status}}">{{item.status === 'ing' ? '报名中' : '已满员'}}</text>
+                    </view>
+                    <view class="activity-info">
+                        <text class="info-label">时间</text>
+                        <text class="info-value">{{item.time}}</text>
+                        <text class="info-label">地点</text>
+                        <text class="info-value">{{item.place}}</text>
+                    </view>
+                    <view class="activity-footer">
+                        <text class="price">¥{{item.price}}</text>
+                        <view class="btn {{item.status}}">{{item.status === 'ing' ? '立即报名' : '查看详情'}}</view>
+                    </view>
+                </view>
+            </block>
+        </view>
     </scroll-view>
 </view>

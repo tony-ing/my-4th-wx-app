@@ -15,7 +15,33 @@ Page({
     activeIndex: 0,
     scrollPadding: 'padding-top: 0px;', // 初始值
     categories: ['正念按导', '静心茶会', '节气茶会', '按导辅材'],
-    activeCategory: 0
+    activeCategory: 0,
+    activities: [
+      // 正念按导
+      [
+        { title: '经络疏通基础班', time: '每周三 14:00-16:00', place: '禅意空间A室', price: 198, status: 'ing' },
+        { title: '肩颈放松专题课', time: '每周五 09:30-11:30', place: '养生堂B区', price: 268, status: 'end' },
+        { title: '全身调理工作坊', time: '每月第一周周六', place: '多功能厅', price: 368, status: 'ing' }
+      ],
+      // 静心茶会
+      [
+        { title: '宋代点茶体验', time: '每周二 10:00-12:00', place: '茶室雅座', price: 168, status: 'ing' },
+        { title: '古树普洱品鉴', time: '每周四 15:00-17:00', place: '茶文化馆', price: 228, status: 'ing' },
+        { title: '茶道入门课程', time: '每月第二周周日', place: '禅茶室', price: 298, status: 'end' }
+      ],
+      // 节气茶会
+      [
+        { title: '立春·迎新茶会', time: '2024-02-04 14:00', place: '节气主题馆', price: 198, status: 'ing' },
+        { title: '谷雨·雨前茶会', time: '2024-04-19 10:00', place: '露天茶庭', price: 258, status: 'ing' },
+        { title: '秋分·养生茶会', time: '2024-09-22 15:00', place: '养生茶室', price: 228, status: 'ing' }
+      ],
+      // 按导辅材
+      [
+        { title: '艾灸疗法实操', time: '每周六 09:00-11:00', place: '理疗室A', price: 298, status: 'ing' },
+        { title: '刮痧入门教学', time: '每周日 14:30-16:30', place: '理疗室B', price: 268, status: 'end' },
+        { title: '拔罐技法精讲', time: '每月第三周周六', place: '传统疗法室', price: 328, status: 'ing' }
+      ]
+    ]
   },
   onLoad() {
     // 获取胶囊按钮位置信息

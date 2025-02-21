@@ -222,7 +222,6 @@ swiper-item {
 
 .nav-list {
   display: flex;
-  padding: 20rpx 0;
   justify-content: space-around;
 }
 
@@ -258,4 +257,98 @@ swiper-item {
 .nav-item.active .nav-text {
   color: #5a4d3e;
   font-weight: 500;
+}
+
+/* 活动列表样式 */
+.activity-list {
+  padding: 0 30rpx 40rpx;
+}
+
+.activity-item {
+  background: #fff;
+  border-radius: 16rpx;
+  margin-bottom: 30rpx;
+  padding: 32rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.05);
+}
+
+.activity-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.activity-title {
+  font-size: 30rpx;
+  color: #5a4d3e;
+  font-weight: 500;
+  max-width: 70%;
+}
+
+.activity-status {
+  font-size: 24rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 8rpx;
+}
+
+.activity-status.ing {
+  background: #e8f5e9;
+  color: #43a047;
+}
+
+.activity-status.end {
+  background: #fff3e0;
+  color: #fb8c00;
+}
+
+.activity-info {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 28rpx;
+}
+
+.info-label {
+  width: 80rpx;
+  font-size: 24rpx;
+  color: #9e9e9e;
+  margin-right: 20rpx;
+}
+
+.info-value {
+  font-size: 26rpx;
+  color: #7a6e5f;
+  margin-right: 40rpx;
+  min-width: 240rpx;
+}
+
+.activity-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1rpx solid #f5f5f5;
+  padding-top: 24rpx;
+}
+
+.price {
+  font-size: 36rpx;
+  color: #d32f2f;
+  font-weight: 500;
+}
+
+.btn {
+  padding: 12rpx 40rpx;
+  border-radius: 30rpx;
+  font-size: 26rpx;
+  transition: all 0.2s;
+}
+
+.btn.ing {
+  background: #5a4d3e;
+  color: #fff;
+}
+
+.btn.end {
+  background: #eeeeee;
+  color: #9e9e9e;
 }
