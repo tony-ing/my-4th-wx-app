@@ -1,0 +1,37 @@
+<view class="container">
+  <!-- 新增导航栏占位 -->
+  <view style="height: {{navBarHeight}}px"></view>
+
+  <view 
+    class="user-section"
+    style="margin-top: {{navBarHeight + 20}}px">
+    <image 
+      class="avatar" 
+      src="{{userInfo ? userInfo.avatarUrl : '/images/my/default-avatar.png'}}" 
+      mode="aspectFill"
+    />
+    <view class="user-info">
+      <text class="username" wx:if="{{userInfo}}">{{userInfo.nickName}}</text>
+      <button 
+        class="login-btn" 
+        wx:if="{{!userInfo}}"
+        bindtap="handleLogin"
+      >微信登录</button>
+    </view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-list">
+    <view 
+      class="menu-item" 
+      wx:for="{{menuList}}" 
+      wx:key="index"
+      bindtap="navigateTo" 
+      data-url="{{item.url}}"
+    >
+      <image class="menu-icon" src="/images/my/{{item.icon}}.png"/>
+      <text class="menu-text">{{item.name}}</text>
+      <image class="arrow" src="/images/my/arrow-right.png"/>
+    </view>
+  </view>
+</view> 

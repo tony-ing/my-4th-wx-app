@@ -1,7 +1,7 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/my/index"
+    "pages/my/my"
   ],
   "window": {
     "navigationBarTextStyle": "black",
@@ -21,7 +21,7 @@
         "text": "我的",
         "iconPath": "images/user.png",
         "selectedIconPath": "images/user_active.png",
-        "pagePath": "pages/my/index"
+        "pagePath": "pages/my/my"
       }
     ]
   },
