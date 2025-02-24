@@ -4,13 +4,13 @@
     display: flex;
     flex-direction: column;
     position: relative;
-    padding-top: 0 !important; /* 移除安全区域padding */
+    padding-bottom: env(safe-area-inset-bottom); /* 适配底部安全区域 */
 }
 
 .scroll-container {
     flex: 1;
-    overflow: hidden;
-    padding-top: 130rpx; /* 增加顶部间距 */
+    box-sizing: border-box;
+    padding-bottom: 60rpx;
 }
 
 /* 顶部形象图 */
@@ -103,10 +103,10 @@
 /* 调整轮播样式 */
 .swiper-container {
   width: 100%; /* 全屏宽度 */
-  height: 750rpx; /* 根据需求调整高度 */
+  height: 780rpx; /* 微调高度 */
   margin: 0;
   border-radius: 0; /* 移除圆角 */
-  margin-top: 40rpx; /* 新增顶部间距 */
+  margin-top: 0 !important; 
   position: relative;
   z-index: 1;
   margin-bottom: -6rpx; /* 轮播底部负margin */
@@ -160,11 +160,10 @@ swiper-item {
 }
 
 .nav-title {
-  font-size: 28rpx; /* 与facility-info一致 */
-  color: #7a6e5f;   /* 使用场地信息同款颜色 */
-  font-weight: 600;
-  padding: 16rpx 32rpx; /* 减少垂直padding */
-  border-bottom: 0.5rpx solid rgba(0,0,0,0.05); /* 细化分割线 */
+  font-size: 34rpx;
+  line-height: 1.2; /* 优化行高 */
+  transform: none; /* 移除微调 */
+  padding-left: 24rpx; /* 减少左侧间距 */
 }
 
 /* 新增场地信息样式 */
@@ -215,14 +214,19 @@ swiper-item {
 /* 优化分类导航为标签页样式 */
 .activity-nav {
   background: #fff;
-  margin: -10rpx 30rpx 40rpx; /* 上方负margin抵消间距 */
+  margin: 20rpx 30rpx 40rpx; /* 修正负margin导致的布局异常 */
   border-radius: 16rpx;
   box-shadow: 0 8rpx 30rpx -10rpx rgba(0,0,0,0.08);
+  position: relative;
+  z-index: 1;
 }
 
 .nav-list {
   display: flex;
   justify-content: space-around;
+  position: relative;
+  z-index: 2;
+  background: #fff;
 }
 
 .nav-item {
@@ -261,7 +265,7 @@ swiper-item {
 
 /* 活动列表样式 */
 .activity-list {
-  padding: 0 30rpx 40rpx;
+  padding: 0 30rpx 40rpx !important;
 }
 
 .activity-item {
@@ -351,4 +355,48 @@ swiper-item {
 .btn.end {
   background: #eeeeee;
   color: #9e9e9e;
+}
+
+/* 最终导航栏样式 */
+.nav-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: var(--status-bar-height) var(--nav-padding) 0;
+  height: auto;
+  z-index: 1000;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(20rpx);
+}
+
+.nav-title {
+  font-size: 36rpx;
+  line-height: var(--capsule-height);
+  color: #5a4d3e;
+}
+
+/* 新增动态间距计算 */
+:host {
+  --swiper-margin: calc(var(--scroll-margin) + 20rpx);
+}
+
+/* 新增导航栏样式 */
+.nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10000; /* 提升层级确保覆盖内容 */
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.1); /* 加强投影区分层级 */
+}
+
+.nav-title {
+  position: absolute;
+  font-size: 36rpx;
+  font-weight: 500;
+  color: #333;
+  line-height: 1.4;
 }

@@ -41,25 +41,48 @@ Page({
         { title: '刮痧入门教学', time: '每周日 14:30-16:30', place: '理疗室B', price: 268, status: 'end' },
         { title: '拔罐技法精讲', time: '每月第三周周六', place: '传统疗法室', price: 328, status: 'ing' }
       ]
-    ]
+    ],
+    navBarHeight: 44, // 默认导航栏高度
+    menuRight: 0, // 胶囊按钮右间距
+    menuTop: 0 // 胶囊按钮顶部间距
   },
   onLoad() {
-    // 获取胶囊按钮位置信息
+    const menu = wx.getMenuButtonBoundingClientRect()
+    const system = wx.getSystemInfoSync()
+    
+    // 核心计算公式
+    const titleTop = menu.top + (menu.height - 32) / 2 // 32px为设计稿文字高度
+    const navHeight = menu.height + 4 // 增加呼吸空间
+    const leftSpace = system.windowWidth - menu.right + 16 // 右侧留出16rpx间距
+
+    this.setData({
+      cssVars: {
+        '--nav-top': `${titleTop}px`,
+        '--nav-height': `${navHeight}px`,
+        '--nav-margin': `${leftSpace}px`,
+        '--scroll-margin': `${menu.bottom + 20}px`,
+        '--status-bar-height': `${system.statusBarHeight}px`,
+        '--capsule-height': `${menu.height}px`,
+        '--nav-padding': `${menu.left - 20}px` // 胶囊按钮左侧间距-20rpx
+      }
+    })
+
+    // 获取胶囊按钮信息
     const menuInfo = wx.getMenuButtonBoundingClientRect()
     this.setData({
-      navStyle: `top: ${menuInfo.top}px; height: ${menuInfo.height}px;`,
-      // 动态设置间距
-      scrollPadding: `padding-top: ${menuInfo.bottom + 20}px;`
+      navBarHeight: menuInfo.bottom + 6,
+      menuRight: menuInfo.right,
+      menuTop: menuInfo.top
     })
-  },
 
-  onLoad() {
+    // 验证云文件路径
     wx.cloud.downloadFile({
       fileID: 'cloud://adxy-0gft2mgb8637adf5.6164-adxy-0gft2mgb8637adf5-1343197700/sample1.jpeg',
       success: res => console.log('文件存在', res),
       fail: err => console.error('文件不存在', err)
     })
   },
+
   // 新增轮播切换监听
   onSwipeChange(e) {
     this.setData({

@@ -1,16 +1,15 @@
-<!-- 修正容器结构 -->
+<!-- 修改页面结构 -->
 <view class="container">
+    <!-- 新增导航栏结构 -->
+    <view class="nav-bar" style="height: {{navBarHeight}}px; padding-top: {{menuTop}}px;">
+        <view class="nav-title" style="left: 30rpx; top: {{menuTop}}px;">按导小院</view>
+    </view>
+
+    <!-- 可滚动区域 -->
     <scroll-view 
         scroll-y 
-        enhanced
-        show-scrollbar="{{false}}"
         class="scroll-container"
-    >
-        <!-- 将导航栏移到scroll-view外部 -->
-        <view class="custom-nav" style="{{navStyle}}">
-            <text class="nav-title">按导小院</text>
-        </view>
-        
+        style="height: calc(100vh - {{navBarHeight}}px); margin-top: {{navBarHeight}}px;">
         <!-- 替换原有图片为轮播组件 -->
         <swiper 
             indicator-dots="{{true}}"
