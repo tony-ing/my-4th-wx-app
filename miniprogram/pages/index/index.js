@@ -14,7 +14,7 @@ Page({
     circular: true, // 开启循环模式
     activeIndex: 0,
     scrollPadding: 'padding-top: 0px;', // 初始值
-    categories: ['正念按导', '静心茶会', '节气茶会', '按导辅材'],
+    categories: [], // 初始化为空数组
     activeCategory: 0,
     activities: [
       // 正念按导
@@ -47,6 +47,13 @@ Page({
     menuTop: 0 // 胶囊按钮顶部间距
   },
   onLoad() {
+    // 初始化云开发
+    wx.cloud.init({
+      env: 'adxy-0gft2mgb8637adf5', // 需与app.js中一致
+      traceUser: true
+    })
+    
+    this.loadCategories()
     const menu = wx.getMenuButtonBoundingClientRect()
     const system = wx.getSystemInfoSync()
     
@@ -103,19 +110,53 @@ Page({
   onCategoryTap(e) {
     const index = e.currentTarget.dataset.index
     this.setData({ activeCategory: index })
+  },
+
+  onImageError(e) {
+    const index = e.currentTarget.dataset.index
+    const defaultImages = [
+      'cloud://default-img1',
+      'cloud://default-img2',
+      'cloud://default-img3'
+    ]
+    this.setData({
+      [`imgUrls[${index}]`]: defaultImages[index] || defaultImages[0]
+    })
+  },
+
+  // 新增云数据库查询方法
+  async loadCategories() {
+    wx.showLoading({ title: '加载中...' })
+    
+    try {
+      const res = await wx.cloud.database()
+        .collection('activities')
+        .orderBy('order', 'asc')
+        .get()
+      
+      if (res.data && res.data.length > 0) {
+        this.setData({
+          categories: res.data.map(item => item.name)
+        })
+      } else {
+        this.setFallbackData()
+      }
+    } catch (err) {
+      console.error('数据加载失败:', err)
+      this.setFallbackData()
+    }
+    
+    wx.hideLoading()
+  },
+
+  // 新增备用数据方法
+  setFallbackData() {
+    this.setData({
+      categories: ['正念按导', '静心茶会', '节气茶会', '按导辅材']
+    })
+    wx.showToast({
+      title: '使用本地数据',
+      icon: 'none'
+    })
   }
-  ,
-
-
-onImageError(e) {
-  const index = e.currentTarget.dataset.index
-  const defaultImages = [
-    'cloud://default-img1',
-    'cloud://default-img2',
-    'cloud://default-img3'
-  ]
-  this.setData({
-    [`imgUrls[${index}]`]: defaultImages[index] || defaultImages[0]
-  })
-} 
 })

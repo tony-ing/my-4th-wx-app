@@ -28,5 +28,6 @@
     "tabSize": 2
   },
   "projectname": "miniprogram-4",
-  "srcMiniprogramRoot": "miniprogram/"
+  "srcMiniprogramRoot": "miniprogram/",
+  "cloudfunctionTemplateRoot": "cloudfunctionTemplate/"
 }
