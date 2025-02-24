@@ -2,7 +2,7 @@
 <view class="container">
     <!-- 新增导航栏结构 -->
     <view class="nav-bar" style="height: {{navBarHeight}}px; padding-top: {{menuTop}}px;">
-        <view class="nav-title" style="left: 30rpx; top: {{menuTop}}px;">按导小院</view>
+        <view class="nav-title" style="left: 30rpx; top: {{menuTop}}px; padding-top: 45px">按导小院</view>
     </view>
 
     <!-- 可滚动区域 -->
@@ -19,7 +19,7 @@
             circular="{{true}}"
             previous-margin="0rpx"
             next-margin="0rpx"
-            style="background: #eee;"
+            style="background: #eee; margin-top: {{navBarHeight}}px;"
             class="swiper-container"
         >
             <block wx:for="{{imgUrls}}" wx:key="*this">

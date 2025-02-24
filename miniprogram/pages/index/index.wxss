@@ -103,13 +103,14 @@
 /* 调整轮播样式 */
 .swiper-container {
   width: 100%; /* 全屏宽度 */
-  height: 780rpx; /* 微调高度 */
+  height: 680rpx !important; /* 适当降低高度 */
   margin: 0;
   border-radius: 0; /* 移除圆角 */
-  margin-top: 0 !important; 
+  margin-top: 0 !important; /* 移除旧设置 */
   position: relative;
   z-index: 1;
   margin-bottom: -6rpx; /* 轮播底部负margin */
+  padding-top: 20rpx; /* 增加呼吸空间 */
 }
 /* 
 .swiper-container::after {
@@ -161,9 +162,10 @@ swiper-item {
 
 .nav-title {
   font-size: 34rpx;
-  line-height: 1.2; /* 优化行高 */
-  transform: none; /* 移除微调 */
-  padding-left: 24rpx; /* 减少左侧间距 */
+  line-height: 1.2;
+  top: 50% !important;
+  transform: translateY(-50%);
+  left: 32rpx !important;
 }
 
 /* 新增场地信息样式 */

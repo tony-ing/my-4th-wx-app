@@ -42,7 +42,7 @@ Page({
         { title: '拔罐技法精讲', time: '每月第三周周六', place: '传统疗法室', price: 328, status: 'ing' }
       ]
     ],
-    navBarHeight: 44, // 默认导航栏高度
+    navBarHeight: 40, // 默认高度改为40
     menuRight: 0, // 胶囊按钮右间距
     menuTop: 0 // 胶囊按钮顶部间距
   },
@@ -69,8 +69,10 @@ Page({
 
     // 获取胶囊按钮信息
     const menuInfo = wx.getMenuButtonBoundingClientRect()
+    const calculatedHeight = Math.min(Math.max(menuInfo.bottom + 4, 40), 50)
+    
     this.setData({
-      navBarHeight: menuInfo.bottom + 6,
+      navBarHeight: calculatedHeight,
       menuRight: menuInfo.right,
       menuTop: menuInfo.top
     })
