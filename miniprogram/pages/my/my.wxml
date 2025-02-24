@@ -9,6 +9,8 @@
       class="avatar" 
       src="{{userInfo ? userInfo.avatarUrl : '/images/my/default-avatar.png'}}" 
       mode="aspectFill"
+      binderror="onImageError"
+      data-type="avatar"
     />
     <view class="user-info">
       <text class="username" wx:if="{{userInfo}}">{{userInfo.nickName}}</text>
