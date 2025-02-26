@@ -102,43 +102,40 @@ Page(safePage({
     }
   },
 
-  // 微信登录
-  async handleLogin() {
-    try {
-      // 先获取用户信息
-      const { userInfo } = await wx.getUserProfile({
-        desc: '用于展示用户信息'
-      })
-      
-      // 再获取登录凭证
-      const { code } = await wx.login()
-      debugger;
-      // 调用云函数获取openId
-      const { result } = await wx.cloud.callFunction({
-        name: 'login',
-        data: { code }
-      })
-
-      // 合并用户信息
-      const completeUserInfo = {
-        ...userInfo,
-        openId: result.openid
+  // 修改登录处理函数
+  handleLogin() {
+    const that = this
+    wx.getUserProfile({
+      desc: '用于展示用户信息',
+      success: () => {
+        wx.login({
+          success(res) {
+            if (res.code) {
+              wx.cloud.callFunction({
+                name: 'login',
+                data: { code: res.code },
+                success: res => {
+                  console.log('完整云函数响应:', res)
+                  const result = res.result || {}
+                  console.log('用户openId:', result.openId)
+                  
+                  // 合并本地获取的用户信息
+                  that.setData({
+                    openId: result.openId,
+                    isAdmin: result.isAdmin,
+                    userInfo: wx.getStorageSync('userInfo') || {},
+                    isLogin: true
+                  })
+                },
+                fail: err => {
+                  console.error('云函数调用失败:', err)
+                }
+              })
+            }
+          }
+        })
       }
-
-      // 更新数据并验证管理员状态
-      this.setData({
-        userInfo: completeUserInfo,
-        isLogin: true
-      })
-      this.checkAdminStatus()
-      
-    } catch (err) {
-      console.error('登录失败:', err)
-      wx.showToast({
-        title: '登录失败',
-        icon: 'none'
-      })
-    }
+    })
   },
 
   // 新增导航栏高度计算

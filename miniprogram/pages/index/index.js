@@ -128,7 +128,7 @@ Page({
     
     try {
       const res = await wx.cloud.database()
-        .collection('activities')
+        .collection('activityCategories')
         .orderBy('order', 'asc')
         .get()
       
