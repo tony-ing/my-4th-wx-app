@@ -75,4 +75,55 @@
 .arrow {
   width: 32rpx;
   height: 32rpx;
+}
+
+/* 新增样式 */
+.user-card {
+  position: relative;
+  padding: 40rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.avatar {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  display: block;
+  margin: 0 auto 20rpx;
+}
+
+.nickname {
+  font-size: 32rpx;
+  color: #333;
+  display: block;
+  margin-bottom: 20rpx;
+}
+
+.login-btn {
+  background: #09BB07;
+  color: white;
+  border-radius: 48rpx;
+  padding: 20rpx 40rpx;
+  font-size: 28rpx;
+}
+
+.wx-icon {
+  width: 40rpx;
+  height: 40rpx;
+  vertical-align: middle;
+  margin-right: 16rpx;
+}
+
+.admin-badge {
+  position: absolute;
+  top: 20rpx;
+  right: 20rpx;
+  background: #FFB300;
+  color: white;
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 24rpx;
 } 

@@ -5,20 +5,21 @@
   <view 
     class="user-section"
     style="margin-top: {{navBarHeight + 20}}px">
-    <image 
-      class="avatar" 
-      src="{{userInfo ? userInfo.avatarUrl : '/images/my/default-avatar.png'}}" 
-      mode="aspectFill"
-      binderror="onImageError"
-      data-type="avatar"
-    />
-    <view class="user-info">
-      <text class="username" wx:if="{{userInfo}}">{{userInfo.nickName}}</text>
-      <button 
-        class="login-btn" 
-        wx:if="{{!userInfo}}"
-        bindtap="handleLogin"
-      >微信登录</button>
+    <view class="user-card">
+      <block wx:if="{{isLogin}}">
+        <image class="avatar" src="{{userInfo.avatarUrl}}"></image>
+        <text class="nickname">{{userInfo.nickName}}</text>
+        <block wx:if="{{isAdmin}}">
+          <view class="admin-badge">管理员</view>
+        </block>
+      </block>
+      
+      <block wx:else>
+        <button class="login-btn" bindtap="handleLogin">
+          <image class="wx-icon" src="/images/my/wechat.png"></image>
+          微信登录
+        </button>
+      </block>
     </view>
   </view>
 

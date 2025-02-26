@@ -54,21 +54,19 @@ Page({
     })
     
     this.loadCategories()
+    const windowInfo = wx.getWindowInfo()
     const menu = wx.getMenuButtonBoundingClientRect()
-    const system = wx.getSystemInfoSync()
     
-    // 核心计算公式
-    const titleTop = menu.top + (menu.height - 32) / 2 // 32px为设计稿文字高度
-    const navHeight = menu.height + 4 // 增加呼吸空间
-    const leftSpace = system.windowWidth - menu.right + 16 // 右侧留出16rpx间距
+    // 使用新的属性名
+    const leftSpace = windowInfo.windowWidth - menu.right + 16
 
     this.setData({
       cssVars: {
-        '--nav-top': `${titleTop}px`,
-        '--nav-height': `${navHeight}px`,
+        '--nav-top': `${menu.top + (menu.height - 32) / 2}px`,
+        '--nav-height': `${menu.height + 4}px`,
         '--nav-margin': `${leftSpace}px`,
         '--scroll-margin': `${menu.bottom + 20}px`,
-        '--status-bar-height': `${system.statusBarHeight}px`,
+        '--status-bar-height': `${windowInfo.statusBarHeight}px`,
         '--capsule-height': `${menu.height}px`,
         '--nav-padding': `${menu.left - 20}px` // 胶囊按钮左侧间距-20rpx
       }

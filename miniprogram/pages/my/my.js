@@ -19,6 +19,8 @@ function safePage(pageConfig) {
 Page(safePage({
   data: {
     userInfo: null,
+    isAdmin: false,
+    isLogin: false,
     menuList: [
       {icon: 'icon-order', name: '我的预约', url: ''},
       {icon: 'icon-setting', name: '账户设置', url: ''},
@@ -32,6 +34,7 @@ Page(safePage({
   onLoad() {
     this.calcNavBarHeight()
     this.checkLoginStatus()
+    this.checkAdminStatus()
     // 验证本地图片是否存在
     try {
       const res = wx.getFileSystemManager().readFileSync('/images/my/default-avatar.png')
@@ -80,36 +83,73 @@ Page(safePage({
     }
   },
 
+  // 检查管理员状态
+  async checkAdminStatus() {
+    const { userInfo } = this.data
+    if (!userInfo) return
+    
+    const db = wx.cloud.database()
+    try {
+      const res = await db.collection('admins').where({
+        openId: userInfo.openId
+      }).count()
+      
+      this.setData({
+        isAdmin: res.total > 0
+      })
+    } catch (err) {
+      console.error('管理员验证失败:', err)
+    }
+  },
+
   // 微信登录
-  handleLogin() {
-    wx.getUserProfile({
-      desc: '用于完善会员信息',
-      success: res => {
-        wx.setStorageSync('userInfo', res.userInfo)
-        this.setData({ userInfo: res.userInfo })
-        wx.showToast({ title: '登录成功' })
-      },
-      fail: err => {
-        console.error('登录失败:', err)
-        wx.showToast({ 
-          title: '登录失败，请重试', 
-          icon: 'none' 
-        })
+  async handleLogin() {
+    try {
+      // 先获取用户信息
+      const { userInfo } = await wx.getUserProfile({
+        desc: '用于展示用户信息'
+      })
+      
+      // 再获取登录凭证
+      const { code } = await wx.login()
+      debugger;
+      // 调用云函数获取openId
+      const { result } = await wx.cloud.callFunction({
+        name: 'login',
+        data: { code }
+      })
+
+      // 合并用户信息
+      const completeUserInfo = {
+        ...userInfo,
+        openId: result.openid
       }
-    }).catch(err => {
-      console.error('Promise异常:', err)
-    })
+
+      // 更新数据并验证管理员状态
+      this.setData({
+        userInfo: completeUserInfo,
+        isLogin: true
+      })
+      this.checkAdminStatus()
+      
+    } catch (err) {
+      console.error('登录失败:', err)
+      wx.showToast({
+        title: '登录失败',
+        icon: 'none'
+      })
+    }
   },
 
   // 新增导航栏高度计算
   calcNavBarHeight() {
-    const systemInfo = wx.getSystemInfoSync()
+    const windowInfo = wx.getWindowInfo()
     const menuInfo = wx.getMenuButtonBoundingClientRect()
     
-    // 安全计算公式
+    // 新的计算公式
     const navHeight = menuInfo.top + menuInfo.height + 6
     this.setData({
-      navBarHeight: Math.min(navHeight, 100) // 限制最大高度
+      navBarHeight: Math.min(navHeight, 100)
     })
   },
 
