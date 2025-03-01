@@ -7,9 +7,11 @@ function safePage(pageConfig) {
       originOnLoad.call(this, options)
     } catch (err) {
       console.error('页面加载异常:', err)
-      wx.reportMonitor('1', 1)
-      wx.redirectTo({
-        url: '/pages/error/index'
+      // 改用更安全的跳转方式
+      wx.nextTick(() => {
+        wx.navigateTo({
+          url: '/pages/error/index'
+        })
       })
     }
   }
@@ -35,43 +37,38 @@ Page(safePage({
     this.calcNavBarHeight()
     this.checkLoginStatus()
     this.checkAdminStatus()
-    // 验证本地图片是否存在
-    try {
-      const res = wx.getFileSystemManager().readFileSync('/images/my/default-avatar.png')
-      console.log('默认头像存在', res)
-    } catch (err) {
-      console.error('默认头像缺失:', err)
-      wx.showToast({
-        title: '资源加载失败',
-        icon: 'error'
-      })
-    }
-    // 在onLoad中添加资源预加载
-    if (typeof wx.preloadAssets === 'function') {
+    
+    // 移除同步文件检查改用异步
+    wx.getFileSystemManager().access({
+      path: '/images/my/default-avatar.png',
+      success: () => console.log('默认头像存在'),
+      fail: () => {
+        console.error('默认头像缺失')
+        this.setData({ avatarError: true })
+      }
+    })
+
+    // 修改预加载资源配置
+    if (wx.canIUse('preloadAssets')) {
       const assetsToLoad = [
-        '/images/my/arrow-right.png',
-        '/images/my/default-avatar.png',
-        '/images/my/icon-order.png',
-        '/images/my/icon-setting.png',
-        '/images/my/icon-location.png',
-        '/images/my/icon-service.png',
-        '/images/my/icon-info.png'
-      ].filter(path => {
+        {src: '/images/my/arrow-right.png', type: 'image'},
+        {src: '/images/my/default-avatar.png', type: 'image'},
+        {src: '/images/common/placeholder.png', type: 'image'}
+      ].filter(item => {
         try {
-          wx.getFileSystemManager().accessSync(path)
+          wx.getFileSystemManager().accessSync(item.src)
           return true
         } catch {
-          console.warn('资源不存在:', path)
+          console.warn('资源不存在:', item.src)
           return false
         }
       })
 
       wx.preloadAssets({
         data: assetsToLoad,
-        success: () => console.log('预加载成功')
+        success: () => console.log('预加载成功'),
+        fail: err => console.error('预加载失败:', err)
       })
-    } else {
-      console.warn('基础库2.16.0+支持preloadAssets')
     }
   },
 
@@ -107,33 +104,41 @@ Page(safePage({
     const that = this
     wx.getUserProfile({
       desc: '用于展示用户信息',
-      success: () => {
+      success: (userRes) => {  // 获取用户信息
         wx.login({
-          success(res) {
-            if (res.code) {
+          success(loginRes) {
+            if (loginRes.code) {
               wx.cloud.callFunction({
                 name: 'login',
-                data: { code: res.code },
+                data: { 
+                  code: loginRes.code,
+                  userInfo: userRes.userInfo  // 传递用户信息
+                },
                 success: res => {
-                  console.log('完整云函数响应:', res)
-                  const result = res.result || {}
-                  console.log('用户openId:', result.openId)
-                  
-                  // 合并本地获取的用户信息
+                  console.log('登录成功:', res)
+                  wx.setStorageSync('userInfo', res.result.userInfo)
                   that.setData({
-                    openId: result.openId,
-                    isAdmin: result.isAdmin,
-                    userInfo: wx.getStorageSync('userInfo') || {},
-                    isLogin: true
+                    userInfo: res.result.userInfo,
+                    isLogin: true,
+                    isAdmin: res.result.isAdmin
                   })
                 },
                 fail: err => {
-                  console.error('云函数调用失败:', err)
+                  console.error('云登录失败:', err)
+                  wx.showToast({ title: '登录失败' })
                 }
               })
             }
+          },
+          fail: err => {
+            console.error('微信登录失败:', err)
+            wx.showToast({ title: '登录失败' })
           }
         })
+      },
+      fail: err => {
+        console.error('获取用户信息失败:', err)
+        wx.showToast({ title: '需要授权才能登录' })
       }
     })
   },

@@ -18,3 +18,8 @@ image {
   /* border: 2rpx solid blue !important; 
 } 
 */
+
+/* 防止页面内容被tabBar遮挡 */
+page {
+  padding-bottom: calc(100rpx + env(safe-area-inset-bottom));
+}

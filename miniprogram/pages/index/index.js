@@ -1,8 +1,8 @@
 Page({
   data: {
     imgUrls: [
-      'cloud://adxy-0gft2mgb8637adf5.6164-adxy-0gft2mgb8637adf5-1343197700/sample1.jpeg',
-      'cloud://adxy-0gft2mgb8637adf5.6164-adxy-0gft2mgb8637adf5-1343197700/sample2.jpeg',
+      'cloud://adxy-0gft2mgb8637adf5.6164-adxy-0gft2mgb8637adf5-1343197700/adxy_home_image2.jpg',
+      'cloud://adxy-0gft2mgb8637adf5.6164-adxy-0gft2mgb8637adf5-1343197700/adxy_home_image1.jpg',
       'cloud://adxy-0gft2mgb8637adf5.6164-adxy-0gft2mgb8637adf5-1343197700/sample3.jpeg'
     ],
     contentText: '在喧嚣都市中开辟一方静土，我们定期举办茶道研习、禅意手作、静心冥想等活动。通过质朴的空间设计与精心策划的内容，帮助现代人暂别纷扰，回归内心的平静与力量。',
@@ -84,11 +84,17 @@ Page({
 
     // 验证云文件路径
     wx.cloud.downloadFile({
-      fileID: 'cloud://adxy-0gft2mgb8637adf5.6164-adxy-0gft2mgb8637adf5-1343197700/sample1.jpeg',
+      fileID: 'cloud://adxy-0gft2mgb8637adf5.6164-adxy-0gft2mgb8637adf5-1343197700/adxy_home_image1.jpg',
       success: res => console.log('文件存在', res),
       fail: err => console.error('文件不存在', err)
     })
   },
+    // 添加tab点击监听
+    onTabItemTap(item) {
+      debugger; // 调试断点
+      console.log(item.pagePath);
+      // ...其他逻辑...
+    },
 
   // 新增轮播切换监听
   onSwipeChange(e) {

@@ -37,4 +37,5 @@
       <image class="arrow" src="/images/my/arrow-right.png"/>
     </view>
   </view>
-</view> 
+</view>
+<custom-tab-bar selected="/pages/my/my"/> 

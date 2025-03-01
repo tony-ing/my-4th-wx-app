@@ -89,3 +89,4 @@
         </view>
     </scroll-view>
 </view>
+<custom-tab-bar selected="/pages/index/index"/>
