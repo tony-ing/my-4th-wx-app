@@ -16,5 +16,68 @@ App({
         traceUser: true
       })
     }
+    // 初始化tab状态追踪
+    wx.onAppRoute((res) => {
+      if (res.path === 'pages/index/index') {
+        this.globalData.currentTabIndex = 0
+      } else if (res.path === 'pages/my/my') {
+        this.globalData.currentTabIndex = 1
+      }
+    })
+  },
+  globalData: {
+    needUpdateTabBar: false,
+    currentTabIndex: 0
+  },
+  
+  watchGlobalData(key, callback) {
+    const observer = (newVal, oldVal) => {
+      callback(newVal, oldVal)
+    }
+    this.watch(
+      () => this.globalData[key],
+      observer
+    )
+    return () => this.unwatch(observer)
+  },
+  
+  watch(getter, callback) {
+    const obj = this.globalData
+    let value = getter()
+    const timer = setInterval(() => {
+      const newVal = getter()
+      if (newVal !== value) {
+        const oldVal = value
+        value = newVal
+        callback(newVal, oldVal)
+      }
+    }, 100)
+    this._watchers = this._watchers || []
+    this._watchers.push({ timer, getter, callback })
+  },
+  
+  unwatch(observer) {
+    this._watchers = this._watchers?.filter(watcher => {
+      if (watcher.callback === observer) {
+        clearInterval(watcher.timer)
+        return false
+      }
+      return true
+    })
+  },
+  
+  onShow() {
+    // 每次小程序回到前台时强制更新
+    if (typeof this.updateTabBar === 'function') {
+      this.updateTabBar()
+    }
+  },
+  
+  // 添加全局tabBar更新方法
+  updateTabBar: function() {
+    const tabBar = this.globalData.tabBarComponent
+    if (tabBar && typeof tabBar.updateSelected === 'function') {
+      tabBar.updateSelected()
+    }
   }
 }) 

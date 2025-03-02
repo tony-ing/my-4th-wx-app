@@ -1,3 +1,5 @@
+const db = wx.cloud.database()
+
 Page({
   data: {
     imgUrls: [
@@ -16,35 +18,12 @@ Page({
     scrollPadding: 'padding-top: 0px;', // 初始值
     categories: [], // 初始化为空数组
     activeCategory: 0,
-    activities: [
-      // 正念按导
-      [
-        { title: '经络疏通基础班', time: '每周三 14:00-16:00', place: '禅意空间A室', price: 198, status: 'ing' },
-        { title: '肩颈放松专题课', time: '每周五 09:30-11:30', place: '养生堂B区', price: 268, status: 'end' },
-        { title: '全身调理工作坊', time: '每月第一周周六', place: '多功能厅', price: 368, status: 'ing' }
-      ],
-      // 静心茶会
-      [
-        { title: '宋代点茶体验', time: '每周二 10:00-12:00', place: '茶室雅座', price: 168, status: 'ing' },
-        { title: '古树普洱品鉴', time: '每周四 15:00-17:00', place: '茶文化馆', price: 228, status: 'ing' },
-        { title: '茶道入门课程', time: '每月第二周周日', place: '禅茶室', price: 298, status: 'end' }
-      ],
-      // 节气茶会
-      [
-        { title: '立春·迎新茶会', time: '2024-02-04 14:00', place: '节气主题馆', price: 198, status: 'ing' },
-        { title: '谷雨·雨前茶会', time: '2024-04-19 10:00', place: '露天茶庭', price: 258, status: 'ing' },
-        { title: '秋分·养生茶会', time: '2024-09-22 15:00', place: '养生茶室', price: 228, status: 'ing' }
-      ],
-      // 按导辅材
-      [
-        { title: '艾灸疗法实操', time: '每周六 09:00-11:00', place: '理疗室A', price: 298, status: 'ing' },
-        { title: '刮痧入门教学', time: '每周日 14:30-16:30', place: '理疗室B', price: 268, status: 'end' },
-        { title: '拔罐技法精讲', time: '每月第三周周六', place: '传统疗法室', price: 328, status: 'ing' }
-      ]
-    ],
+    activityList: [],
     navBarHeight: 40, // 默认高度改为40
     menuRight: 0, // 胶囊按钮右间距
-    menuTop: 0 // 胶囊按钮顶部间距
+    menuTop: 0, // 胶囊按钮顶部间距
+    activityGroups: [],
+    activeCategoryId: null // 改为使用分类ID
   },
   onLoad() {
     // 初始化云开发
@@ -53,7 +32,7 @@ Page({
       traceUser: true
     })
     
-    this.loadCategories()
+    this.loadData()
     const windowInfo = wx.getWindowInfo()
     const menu = wx.getMenuButtonBoundingClientRect()
     
@@ -79,7 +58,10 @@ Page({
     this.setData({
       navBarHeight: calculatedHeight,
       menuRight: menuInfo.right,
-      menuTop: menuInfo.top
+      menuTop: menuInfo.top,
+      cssVars: {
+        '--navBarHeight': `${calculatedHeight}px`
+      }
     })
 
     // 验证云文件路径
@@ -112,8 +94,11 @@ Page({
     })
   },
   onCategoryTap(e) {
-    const index = e.currentTarget.dataset.index
-    this.setData({ activeCategory: index })
+    const categoryId = e.currentTarget.dataset.id
+    this.setData({ 
+      activeCategoryId: categoryId,
+      activeCategory: this.data.activityGroups.findIndex(cat => cat.id === categoryId)
+    })
   },
 
   onImageError(e) {
@@ -128,39 +113,89 @@ Page({
     })
   },
 
-  // 新增云数据库查询方法
-  async loadCategories() {
+  // 新增组合式数据加载方法
+  async loadData() {
     wx.showLoading({ title: '加载中...' })
-    
     try {
-      const res = await wx.cloud.database()
-        .collection('activityCategories')
-        .orderBy('order', 'asc')
-        .get()
+      const [categoriesRes, activitiesRes] = await Promise.all([
+        wx.cloud.database().collection('activityCategories').orderBy('order', 'asc').get(),
+        wx.cloud.database().collection('activities').get()
+      ])
       
-      if (res.data && res.data.length > 0) {
-        this.setData({
-          categories: res.data.map(item => item.name)
-        })
-      } else {
-        this.setFallbackData()
-      }
+      this.processData(categoriesRes.data, activitiesRes.data)
     } catch (err) {
       console.error('数据加载失败:', err)
-      this.setFallbackData()
+      wx.showToast({ title: '数据加载失败', icon: 'none' })
     }
-    
     wx.hideLoading()
   },
 
-  // 新增备用数据方法
-  setFallbackData() {
-    this.setData({
-      categories: ['正念按导', '静心茶会', '节气茶会', '按导辅材']
+  // 新增数据处理方法
+  processData(categories, activities) {
+    // 转换分类数据
+    const sortedCategories = categories.map(cat => ({
+      id: cat._id,
+      name: cat.name,
+      order: cat.order,
+      activities: []
+    })).sort((a, b) => a.order - b.order)
+
+    // 分组活动数据
+    activities.forEach(activity => {
+      const category = sortedCategories.find(cat => cat.id === activity.categoryId)
+      if (category) {
+        category.activities.push(this.formatActivity(activity))
+      }
     })
-    wx.showToast({
-      title: '使用本地数据',
-      icon: 'none'
+    debugger
+    this.setData({ 
+      activityGroups: sortedCategories,
+      categories: sortedCategories.map(cat => cat.name) 
     })
+
+    // 设置默认选中第一个分类
+    if (sortedCategories.length > 0) {
+      this.setData({ 
+        activeCategoryId: sortedCategories[0].id,
+        activeCategory: 0
+      })
+    }
+  },
+
+  // 拆分活动格式化方法
+  formatActivity(item) {
+    return {
+      id: item._id,
+      title: item.name,
+      time: `${this.formatTime(item.startTime)}-${this.formatTime(item.endTime)}`,
+      date: this.getWeekDay(item.weekDay),
+      price: item.price || '免费',
+      status: item.status || '可报名',
+      room: item.room
+    }
+  },
+
+  // 修改时间格式化方法
+  formatTime(timeValue) {
+    // 处理多种数据类型和格式
+    let timeStr = String(timeValue || '0000')
+      .replace(/[^0-9]/g, '') // 移除非数字字符
+      .padStart(4, '0')
+      .slice(0,4);
+    
+    // 处理24小时制边界情况
+    let hours = parseInt(timeStr.substring(0, 2), 10);
+    hours = Math.min(Math.max(hours, 0), 23); // 限制0-23
+    
+    const minutes = timeStr.substring(2).padStart(2, '0').slice(0,2);
+    
+    // 返回标准化时间
+    return `${hours}:${minutes}`;
+  },
+
+  // 新增星期转换方法
+  getWeekDay(dayNum) {
+    const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+    return weekDays[dayNum] || '每天'
   }
 })

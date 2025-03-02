@@ -9,7 +9,7 @@
     <scroll-view 
         scroll-y 
         class="scroll-container"
-        style="height: calc(100vh - {{navBarHeight}}px); margin-top: {{navBarHeight}}px;">
+        style="{{cssVars}}">
         <!-- 替换原有图片为轮播组件 -->
         <swiper 
             indicator-dots="{{true}}"
@@ -55,34 +55,39 @@
             <view class="nav-title">活动报名</view>
             <view class="nav-list">
                 <view 
-                    wx:for="{{categories}}" 
-                    wx:key="index" 
-                    class="nav-item {{activeCategory === index ? 'active' : ''}}"
+                    wx:for="{{activityGroups}}" 
+                    wx:key="id"
+                    class="nav-item {{activeCategoryId === item.id ? 'active' : ''}}"
                     bindtap="onCategoryTap"
-                    data-index="{{index}}"
+                    data-id="{{item.id}}"
                 >
-                    <text class="nav-text">{{item}}</text>
+                    <text class="nav-text">{{item.name}}</text>
                 </view>
             </view>
         </view>
 
         <!-- 在activity-nav下方添加活动列表 -->
-        <view class="activity-list">
-            <block wx:for="{{activities[activeCategory]}}" wx:key="index">
-                <view class="activity-item">
-                    <view class="activity-header">
-                        <text class="activity-title">{{item.title}}</text>
-                        <text class="activity-status {{item.status}}">{{item.status === 'ing' ? '报名中' : '已满员'}}</text>
-                    </view>
-                    <view class="activity-info">
-                        <text class="info-label">时间</text>
-                        <text class="info-value">{{item.time}}</text>
-                        <text class="info-label">地点</text>
-                        <text class="info-value">{{item.place}}</text>
-                    </view>
-                    <view class="activity-footer">
-                        <text class="price">¥{{item.price}}</text>
-                        <view class="btn {{item.status}}">{{item.status === 'ing' ? '立即报名' : '查看详情'}}</view>
+        <view class="activity-container">
+            <block wx:for="{{activityGroups}}" wx:key="id">
+                <view class="category-section {{activeCategoryId === item.id ? 'active' : ''}}">                    
+                    <block wx:for="{{item.activities}}" wx:key="id">
+                        <view class="activity-item">
+                            <view class="activity-header">
+                                <text class="activity-name">{{item.title}}</text>
+                                <text class="activity-status {{item.status === '可报名' ? 'active' : ''}} {{item.price === '免费' ? 'free' : ''}}">
+                                    {{item.status}} {{item.price === '免费' ? '· 免费' : ''}}
+                                </text>
+                            </view>
+                            <view class="activity-info">
+                                <text class="info-item">{{item.date}} {{item.time}}</text>
+                                <text class="info-item">{{item.room}}</text>
+                            </view>
+ 
+                        </view>
+                    </block>
+                    
+                    <view wx:if="{{item.activities.length === 0}}" class="empty-tip">
+                        当前分类暂无活动
                     </view>
                 </view>
             </block>
