@@ -1,22 +1,24 @@
 /* 页面容器 */
 .container {
-    height: 100vh;
+    overflow: visible;
+    height: auto;
     display: flex;
     flex-direction: column;
-    position: relative;
     padding-bottom: env(safe-area-inset-bottom); /* 适配底部安全区域 */
+    z-index: 1;
+    touch-action: pan-y;
+    position: relative;
 }
 
 .scroll-container {
     flex: 1;
     box-sizing: border-box;
-    padding-bottom: 130rpx; /* 再增加40rpx */
+    padding-bottom: 200rpx;
     margin-top: var(--navBarHeight);
-    height: calc(100vh 
-      - var(--navBarHeight) 
-      - var(--tabBarHeight)
-      - env(safe-area-inset-bottom) /* 添加安全区域适配 */
-    );
+    height: calc(100vh - var(--navBarHeight) - var(--tabBarHeight)) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    pointer-events: auto !important;
 }
 
 /* 顶部形象图 */
@@ -412,7 +414,7 @@ swiper-item {
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 10000; /* 提升层级确保覆盖内容 */
+  z-index: 1100; /* 确保导航栏在最顶层 */
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.1); /* 加强投影区分层级 */
@@ -460,4 +462,206 @@ custom-tab-bar {
 /* 增加最后一个活动项底部间距 */
 .activity-item:last-child {
   margin-bottom: 100rpx !important;
+}
+
+/* 详情弹窗样式 */
+.detail-dialog-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  opacity: 0;
+  pointer-events: auto; /* 允许弹窗区域交互 */
+}
+
+.detail-dialog-mask.show {
+  opacity: 1;
+  display: flex !important;
+}
+
+.detail-dialog {
+  background: #fff;
+  width: 100%;
+  max-height: 70vh;
+  border-radius: 16rpx;
+  margin: 40rpx;
+  transform: none;
+}
+
+.detail-dialog-mask.show .detail-dialog {
+  transform: translateY(0); /* 显示时回到原位 */
+}
+
+.dialog-content {
+  flex: 1;
+  padding: 0 32rpx;
+}
+
+.detail-image {
+  width: 100%;
+  height: 400rpx;
+  border-radius: 16rpx;
+  margin: 32rpx 0;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32rpx;
+}
+
+.detail-title {
+  font-size: 36rpx;
+  color: #2d3436;
+  font-weight: 500;
+  flex: 1;
+  margin-right: 20rpx;
+}
+
+.detail-status {
+  font-size: 28rpx;
+  padding: 8rpx 24rpx;
+  border-radius: 40rpx;
+  background: #f0f0f0;
+}
+
+.detail-status.active {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.detail-info {
+  margin-bottom: 40rpx;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+  font-size: 28rpx;
+  color: #636e72;
+}
+
+.info-icon {
+  width: 36rpx;
+  height: 36rpx;
+  margin-right: 16rpx;
+}
+
+.desc-title {
+  display: block;
+  font-size: 30rpx;
+  color: #2d3436;
+  margin-bottom: 20rpx;
+  font-weight: 500;
+}
+
+.desc-content {
+  font-size: 28rpx;
+  color: #636e72;
+  line-height: 1.6;
+}
+
+.calendar-section {
+  margin: 40rpx 0;
+  padding-top: 40rpx;
+  border-top: 1rpx solid #eee;
+  display: none;
+}
+
+.section-title {
+  font-size: 30rpx;
+  color: #2d3436;
+  margin-bottom: 32rpx;
+  display: block;
+}
+
+.week-days {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20rpx;
+}
+
+.day-item {
+  padding: 20rpx;
+  border-radius: 12rpx;
+  background: #f8f8f8;
+  text-align: center;
+}
+
+.day-item.available {
+  background: #e8f5e9;
+  border: 1rpx solid #388e3c;
+}
+
+.day-name {
+  display: block;
+  font-size: 28rpx;
+  color: #2d3436;
+  margin-bottom: 8rpx;
+}
+
+.day-date {
+  display: block;
+  font-size: 24rpx;
+  color: #636e72;
+}
+
+/* 调整底部操作栏样式 */
+.dialog-footer {
+  padding: 24rpx 32rpx 40rpx;
+  border-top: 1rpx solid #eee;
+  background: #fff;
+}
+
+.book-btn {
+  width: 100%;
+  height: 80rpx;
+  line-height: 80rpx;
+  font-size: 32rpx;
+  background: #2d3436;
+  color: #fff !important;
+  border-radius: 48rpx;
+}
+
+/* 新增关闭按钮样式 */
+.dialog-close {
+  position: absolute;
+  top: 20rpx;
+  right: 20rpx;
+  width: 60rpx;
+  height: 60rpx;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-icon {
+  font-size: 50rpx;
+  color: #999;
+  line-height: 1;
+  transition: all 0.2s;
+}
+
+.dialog-close:active .close-icon {
+  transform: scale(0.9);
+  opacity: 0.8;
+}
+
+/* 添加弹窗显示时的全局锁定 */
+.detail-dialog-mask.show + .container {
+  pointer-events: none; /* 禁用主页面交互 */
+}
+
+.detail-dialog-mask.show ~ .container {
+  /* 移除全局锁定 */
 }

@@ -1,5 +1,8 @@
 <!-- 修改页面结构 -->
-<view class="container">
+<view 
+  class="container" 
+  style="{{showDetailDialog ? 'overflow: hidden; height: 100vh;' : ''}}"
+>
     <!-- 新增导航栏结构 -->
     <view class="nav-bar" style="height: {{navBarHeight}}px; padding-top: {{menuTop}}px;">
         <view class="nav-title" style="left: 30rpx; top: {{menuTop}}px; padding-top: 45px">按导小院</view>
@@ -9,7 +12,10 @@
     <scroll-view 
         scroll-y 
         class="scroll-container"
-        style="{{cssVars}}">
+        style="{{cssVars}}"
+        scroll-top="{{scrollTop}}"
+        bindscroll="onPageScroll"
+        enabled="{{!showDetailDialog}}">
         <!-- 替换原有图片为轮播组件 -->
         <swiper 
             indicator-dots="{{true}}"
@@ -71,7 +77,7 @@
             <block wx:for="{{activityGroups}}" wx:key="id">
                 <view class="category-section {{activeCategoryId === item.id ? 'active' : ''}}">                    
                     <block wx:for="{{item.activities}}" wx:key="id">
-                        <view class="activity-item">
+                      <view class="activity-item" bindtap="onActivityTap" data-id="{{item.id}}">
                             <view class="activity-header">
                                 <text class="activity-name">{{item.title}}</text>
                                 <text class="activity-status {{item.status === '可报名' ? 'active' : ''}} {{item.price === '免费' ? 'free' : ''}}">
@@ -95,3 +101,52 @@
     </scroll-view>
 </view>
 <custom-tab-bar selected="/pages/index/index"/>
+
+<!-- 回滚弹窗结构 -->
+<view wx:if="{{showDetailDialog}}" class="detail-dialog-mask">
+  <view class="detail-dialog">
+    <view class="dialog-close" bindtap="closeDetailDialog">
+      <text class="close-icon">×</text>
+    </view>
+    <scroll-view scroll-y class="dialog-content">
+      <view class="detail-section">
+        <view class="detail-header">
+          <text class="detail-title">{{currentActivity.title}}</text>
+          <text class="detail-status {{currentActivity.status === '可报名' ? 'active' : ''}}">
+            {{currentActivity.status}}
+          </text>
+        </view>
+
+        <view class="detail-info">
+          <view class="info-item">
+            <image src="/images/icons/time.png" class="info-icon"/>
+            <text>{{currentActivity.date}} {{currentActivity.time}}</text>
+          </view>
+          <view class="info-item">
+            <image src="/images/icons/location.png" class="info-icon"/>
+            <text>{{currentActivity.room}}</text>
+          </view>
+          <view class="info-item">
+            <image src="/images/icons/price.png" class="info-icon"/>
+            <text>{{currentActivity.price === '免费' ? '免费参与' : '¥'+currentActivity.price}}</text>
+          </view>
+        </view>
+
+        <view class="detail-desc">
+          <text class="desc-title">活动简介</text>
+          <text class="desc-content">{{currentActivity.description || '暂无活动说明'}}</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <view class="dialog-footer">
+      <button 
+        class="book-btn" 
+        bindtap="handleBook"
+        disabled="{{currentActivity.status !== '可报名'}}"
+      >
+        {{currentActivity.status === '可报名' ? '立即报名' : '已满员'}}
+      </button>
+    </view>
+  </view>
+</view>

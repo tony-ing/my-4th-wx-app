@@ -23,7 +23,11 @@ Page({
     menuRight: 0, // 胶囊按钮右间距
     menuTop: 0, // 胶囊按钮顶部间距
     activityGroups: [],
-    activeCategoryId: null // 改为使用分类ID
+    activeCategoryId: null, // 改为使用分类ID
+    showDetailDialog: false,
+    currentActivity: null,
+    weekSchedule: [], // 示例周排期数据
+    scrollTop: 0
   },
   onLoad() {
     // 初始化云开发
@@ -69,6 +73,31 @@ Page({
       fileID: 'cloud://adxy-0gft2mgb8637adf5.6164-adxy-0gft2mgb8637adf5-1343197700/adxy_home_image1.jpg',
       success: res => console.log('文件存在', res),
       fail: err => console.error('文件不存在', err)
+    })
+
+    // 修改系统信息获取方式
+    wx.getSystemInfo({
+      success: (res) => {
+        const navBarHeight = res.statusBarHeight + 44
+        this.setData({
+          navBarHeight,
+          menuTop: res.screenHeight - res.safeArea.bottom + 4,
+          cssVars: {
+            '--navBarHeight': `${navBarHeight}px`,
+            '--tabBarHeight': '120rpx'
+          }
+        })
+      },
+      fail: (err) => {
+        console.error('获取系统信息失败:', err)
+        this.setData({
+          navBarHeight: 80,
+          cssVars: {
+            '--navBarHeight': '80px',
+            '--tabBarHeight': '120rpx'
+          }
+        })
+      }
     })
   },
     // 添加tab点击监听
@@ -162,7 +191,35 @@ Page({
     }
   },
 
-  // 拆分活动格式化方法
+  // 修改活动点击处理逻辑
+  onActivityTap(e) {
+    const activityId = e.currentTarget.dataset.id
+    wx.showLoading({ title: '加载中...' })
+    
+    wx.cloud.database().collection('activities').doc(activityId).get()
+      .then(res => {
+        console.log('[DEBUG] 活动数据:', res.data)
+        const activity = this.formatActivity(res.data)
+        this.setData({
+          currentActivity: {
+            ...activity,
+            description: res.data.description || '',
+            time: `${this.formatTime(res.data.startTime)}-${this.formatTime(res.data.endTime)}`
+          },
+          showDetailDialog: true
+        })
+      })
+      .catch(err => {
+        console.error('获取活动详情失败:', err)
+        wx.showToast({ title: '加载失败', icon: 'none' })
+      })
+      .finally(() => {
+        wx.hideLoading()
+        console.log('当前弹窗状态:', this.data.showDetailDialog)
+      })
+  },
+
+  // 修改活动格式化方法
   formatActivity(item) {
     return {
       id: item._id,
@@ -171,31 +228,73 @@ Page({
       date: this.getWeekDay(item.weekDay),
       price: item.price || '免费',
       status: item.status || '可报名',
-      room: item.room
+      room: item.room,
+      weekDay: item.weekDay // 保留周数字段用于排期生成
     }
   },
 
-  // 修改时间格式化方法
+  // 统一时间格式化方法
   formatTime(timeValue) {
-    // 处理多种数据类型和格式
-    let timeStr = String(timeValue || '0000')
-      .replace(/[^0-9]/g, '') // 移除非数字字符
-      .padStart(4, '0')
-      .slice(0,4);
-    
-    // 处理24小时制边界情况
-    let hours = parseInt(timeStr.substring(0, 2), 10);
-    hours = Math.min(Math.max(hours, 0), 23); // 限制0-23
-    
-    const minutes = timeStr.substring(2).padStart(2, '0').slice(0,2);
-    
-    // 返回标准化时间
-    return `${hours}:${minutes}`;
+    if (!timeValue) return '时间待定'
+    try {
+      const date = new Date(timeValue)
+      return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
+    } catch (e) {
+      console.error('时间格式错误:', timeValue)
+      return '时间待定'
+    }
   },
 
-  // 新增星期转换方法
+  // 修复周显示方法
   getWeekDay(dayNum) {
     const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
     return weekDays[dayNum] || '每天'
+  },
+
+  // 生成示例周排期
+  generateWeekSchedule(weekDay) {
+    const days = []
+    const today = new Date()
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(today)
+      date.setDate(today.getDate() + i)
+      days.push({
+        weekDay: ['周日','周一','周二','周三','周四','周五','周六'][date.getDay()],
+        date: `${date.getMonth()+1}/${date.getDate()}`,
+        available: date.getDay() === weekDay
+      })
+    }
+    this.setData({ weekSchedule: days })
+  },
+
+  // 报名处理
+  handleBook() {
+    wx.showToast({
+      title: '报名成功',
+      icon: 'success',
+      success: () => {
+        this.setData({ showDetailDialog: false })
+      }
+    })
+  },
+
+  // 新增事件阻止方法
+  stopPropagation() {}, // 空方法阻止事件冒泡
+
+  // 在page实例中添加观察器
+  observers: {
+    'showDetailDialog': function(val) {
+      console.log('[DEBUG] showDetailDialog变化:', val)
+    }
+  },
+
+  closeDetailDialog() {
+    this.setData({ 
+      showDetailDialog: false 
+    })
+  },
+
+  onPageScroll(e) {
+    this.setData({ scrollTop: e.scrollTop })
   }
 })
