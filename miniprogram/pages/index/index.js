@@ -24,10 +24,14 @@ Page({
     menuTop: 0, // 胶囊按钮顶部间距
     activityGroups: [],
     activeCategoryId: null, // 改为使用分类ID
-    showDetailDialog: false,
+    showDetailPopup: false,
     currentActivity: null,
     weekSchedule: [], // 示例周排期数据
-    scrollTop: 0
+    scrollTop: 0,
+    popupLoading: true,
+    scrollHeight: 500, // 初始值
+    showDetail: false,
+    selectedActivity: null
   },
   onLoad() {
     // 初始化云开发
@@ -99,6 +103,8 @@ Page({
         })
       }
     })
+
+    this.calculateScrollHeight()
   },
     // 添加tab点击监听
     onTabItemTap(item) {
@@ -131,14 +137,9 @@ Page({
   },
 
   onImageError(e) {
-    const index = e.currentTarget.dataset.index
-    const defaultImages = [
-      'cloud://default-img1',
-      'cloud://default-img2',
-      'cloud://default-img3'
-    ]
+    const { index } = e.currentTarget.dataset
     this.setData({
-      [`imgUrls[${index}]`]: defaultImages[index] || defaultImages[0]
+      [`imgUrls[${index}]`]: '/images/fallback.jpg' // 添加本地备用图
     })
   },
 
@@ -146,15 +147,26 @@ Page({
   async loadData() {
     wx.showLoading({ title: '加载中...' })
     try {
+      const db = wx.cloud.database()
       const [categoriesRes, activitiesRes] = await Promise.all([
-        wx.cloud.database().collection('activityCategories').orderBy('order', 'asc').get(),
-        wx.cloud.database().collection('activities').get()
+        db.collection('activityCategories').orderBy('order', 'asc').get(),
+        db.collection('activities').get()
       ])
       
+      if (!categoriesRes || !activitiesRes) throw new Error('接口响应异常')
+      if (categoriesRes.errMsg !== 'collection.get:ok' || activitiesRes.errMsg !== 'collection.get:ok') {
+        throw new Error('数据获取失败')
+      }
+
       this.processData(categoriesRes.data, activitiesRes.data)
     } catch (err) {
       console.error('数据加载失败:', err)
       wx.showToast({ title: '数据加载失败', icon: 'none' })
+      this.setData({
+        activityGroups: [],
+        categories: [],
+        activeCategoryId: null
+      })
     }
     wx.hideLoading()
   },
@@ -176,7 +188,7 @@ Page({
         category.activities.push(this.formatActivity(activity))
       }
     })
-    debugger
+
     this.setData({ 
       activityGroups: sortedCategories,
       categories: sortedCategories.map(cat => cat.name) 
@@ -191,32 +203,46 @@ Page({
     }
   },
 
-  // 修改活动点击处理逻辑
+  // 活动项点击处理
   onActivityTap(e) {
-    const activityId = e.currentTarget.dataset.id
-    wx.showLoading({ title: '加载中...' })
-    
-    wx.cloud.database().collection('activities').doc(activityId).get()
-      .then(res => {
-        console.log('[DEBUG] 活动数据:', res.data)
-        const activity = this.formatActivity(res.data)
-        this.setData({
-          currentActivity: {
-            ...activity,
-            description: res.data.description || '',
-            time: `${this.formatTime(res.data.startTime)}-${this.formatTime(res.data.endTime)}`
-          },
-          showDetailDialog: true
-        })
+    const { id } = e.currentTarget.dataset
+    this.getActivityDetail(id)
+  },
+
+  // 获取活动详情
+  async getActivityDetail(activityId) {
+    wx.showLoading({ title: '加载中...', mask: true })
+    try {
+      const db = wx.cloud.database()
+      const res = await db.collection('activities').doc(activityId).get()
+      
+      if (!res.data) throw new Error('活动不存在')
+      
+      this.setData({
+        selectedActivity: this.formatDetailData(res.data),
+        showDetail: true
       })
-      .catch(err => {
-        console.error('获取活动详情失败:', err)
-        wx.showToast({ title: '加载失败', icon: 'none' })
+    } catch (err) {
+      console.error('详情获取失败:', err)
+      wx.showToast({
+        title: '加载详情失败',
+        icon: 'none'
       })
-      .finally(() => {
-        wx.hideLoading()
-        console.log('当前弹窗状态:', this.data.showDetailDialog)
-      })
+    }
+    wx.hideLoading()
+  },
+
+  // 新增详情数据格式化方法
+  formatDetailData(activity) {
+    return {
+      id: activity._id,
+      name: activity.name,
+      time: `${this.getWeekDay(activity.weekDay)} ${this.formatTime(activity.startTime)}-${this.formatTime(activity.endTime)}`,
+      room: activity.room,
+      description: activity.description?.trim() || '该活动暂无详细说明',
+      price: activity.price || '免费',
+      status: activity.status || '可报名'
+    }
   },
 
   // 修改活动格式化方法
@@ -235,10 +261,19 @@ Page({
 
   // 统一时间格式化方法
   formatTime(timeValue) {
-    if (!timeValue) return '时间待定'
+    if (!timeValue || isNaN(timeValue)) return '时间待定'
     try {
-      const date = new Date(timeValue)
-      return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
+      // 处理HHmm格式的数字时间（如830表示08:30）
+      const timeStr = String(timeValue).padStart(4, '0')
+      const hours = parseInt(timeStr.substring(0, 2))
+      const minutes = parseInt(timeStr.substring(2, 4))
+      
+      // 验证时间有效性
+      if (hours > 23 || minutes > 59) {
+        throw new Error('非法时间值')
+      }
+      
+      return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
     } catch (e) {
       console.error('时间格式错误:', timeValue)
       return '时间待定'
@@ -273,7 +308,7 @@ Page({
       title: '报名成功',
       icon: 'success',
       success: () => {
-        this.setData({ showDetailDialog: false })
+        this.setData({ showDetailPopup: false })
       }
     })
   },
@@ -283,18 +318,37 @@ Page({
 
   // 在page实例中添加观察器
   observers: {
-    'showDetailDialog': function(val) {
-      console.log('[DEBUG] showDetailDialog变化:', val)
+    'showDetailPopup': function(val) {
+      console.log('[DEBUG] showDetailPopup变化:', val)
     }
   },
 
-  closeDetailDialog() {
+  closeDetailPopup() {
     this.setData({ 
-      showDetailDialog: false 
+      showDetailPopup: false,
+      currentActivity: null,
+      popupLoading: true
     })
   },
 
   onPageScroll(e) {
     this.setData({ scrollTop: e.scrollTop })
+  },
+
+  calculateScrollHeight() {
+    const systemInfo = wx.getSystemInfoSync()
+    const query = wx.createSelectorQuery()
+    query.select('.nav-bar').boundingClientRect()
+    query.exec(res => {
+      const navHeight = res[0].height
+      this.setData({
+        scrollHeight: systemInfo.windowHeight - navHeight
+      })
+    })
+  },
+
+  // 关闭弹窗
+  onCloseDetail() {
+    this.setData({ showDetail: false })
   }
 })

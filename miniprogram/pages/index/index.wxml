@@ -1,8 +1,5 @@
 <!-- 修改页面结构 -->
-<view 
-  class="container" 
-  style="{{showDetailDialog ? 'overflow: hidden; height: 100vh;' : ''}}"
->
+<view class="container">
     <!-- 新增导航栏结构 -->
     <view class="nav-bar" style="height: {{navBarHeight}}px; padding-top: {{menuTop}}px;">
         <view class="nav-title" style="left: 30rpx; top: {{menuTop}}px; padding-top: 45px">按导小院</view>
@@ -10,12 +7,12 @@
 
     <!-- 可滚动区域 -->
     <scroll-view 
+        class="page-container"
         scroll-y 
-        class="scroll-container"
-        style="{{cssVars}}"
-        scroll-top="{{scrollTop}}"
-        bindscroll="onPageScroll"
-        enabled="{{!showDetailDialog}}">
+        enhanced
+        show-scrollbar="{{false}}"
+        style="height: {{scrollHeight}}px;"
+    >
         <!-- 替换原有图片为轮播组件 -->
         <swiper 
             indicator-dots="{{true}}"
@@ -150,3 +147,40 @@
     </view>
   </view>
 </view>
+
+<!-- 在页面底部添加弹窗结构 -->
+<view class="detail-modal" wx:if="{{showDetail}}">
+  <view class="modal-mask" catchtap="onCloseDetail"></view>
+  <view class="modal-content">
+    <view class="modal-header">
+      <text class="title">{{selectedActivity.name}}</text>
+      <text class="icon-close" catchtap="onCloseDetail">×</text>
+    </view>
+    
+    <scroll-view class="detail-body" scroll-y>
+      <view class="info-item">
+        <text class="label">时间：</text>
+        <text>{{selectedActivity.time}}</text>
+      </view>
+      <view class="info-item">
+        <text class="label">地点：</text>
+        <text>{{selectedActivity.room}}</text>
+      </view>
+      <view class="info-item desc">
+        <text class="desc-text">{{selectedActivity.description || '暂无详细说明'}}</text>
+      </view>
+    </scroll-view>
+
+    <view class="action-bar">
+      <button class="btn-apply">立即报名</button>
+    </view>
+  </view>
+</view>
+
+<!-- 在关键位置添加空状态提示 -->
+<block wx:if="{{activityGroups.length === 0}}">
+  <view class="empty-state">
+    <image src="/images/empty.png" class="empty-image"/>
+    <text class="empty-text">暂无活动数据</text>
+  </view>
+</block>
