@@ -172,7 +172,7 @@
     </scroll-view>
 
     <view class="action-bar">
-      <button class="btn-apply">立即报名</button>
+      <button class="btn-apply" bindtap="onApplyTap">立即报名</button>
     </view>
   </view>
 </view>

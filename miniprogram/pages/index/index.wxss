@@ -726,11 +726,14 @@ custom-tab-bar {
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: 70vh;
+  height: calc(70vh - var(--tab-bar-height)); /* 考虑tabBar高度 */
   background: #fff;
   border-radius: 24rpx 24rpx 0 0;
   display: flex;
   flex-direction: column;
+  z-index: 1001;
+  overflow: visible !important;
+  padding-bottom: 140rpx; /* 为按钮预留空间 */
 }
 
 .modal-header {
@@ -754,7 +757,7 @@ custom-tab-bar {
 
 .detail-body {
   flex: 1;
-  padding: 32rpx;
+  padding: 32rpx 32rpx; /* 增加底部内边距 */
 }
 
 .info-item {
@@ -776,15 +779,30 @@ custom-tab-bar {
 .action-bar {
   padding: 24rpx 32rpx;
   border-top: 1rpx solid #eee;
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  z-index: 1;
+  box-shadow: 0 -8rpx 20rpx rgba(0,0,0,0.15);
+  min-height: auto; /* 自动高度 */
+  margin-bottom: env(safe-area-inset-bottom); /* 适配安全区域 */
 }
 
 .btn-apply {
-  background: #5B7E60;
-  color: white;
-  border-radius: 8rpx;
-  font-size: 32rpx;
-  height: 88rpx;
-  line-height: 88rpx;
+  background: #5B7E60 !important;
+  color: white !important;
+  border-radius: 12rpx;
+  font-size: 34rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 96rpx;
+  width: 100% !important;
+  margin: 0;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.1);
+  position: relative;
+  z-index: 9999;
+  margin-bottom: 0;
 }
 
 /* 新增活动容器样式 */

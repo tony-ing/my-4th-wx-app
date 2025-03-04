@@ -350,5 +350,16 @@ Page({
   // 关闭弹窗
   onCloseDetail() {
     this.setData({ showDetail: false })
+  },
+
+  onApplyTap() {
+    wx.showToast({
+      title: '报名功能开发中',
+      icon: 'none'
+    })
+    // 预留跳转接口
+    // wx.navigateTo({
+    //   url: '/pages/apply/apply?activityId=' + this.data.selectedActivity.id
+    // })
   }
 })

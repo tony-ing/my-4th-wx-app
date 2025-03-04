@@ -1,0 +1,3 @@
+:root {
+  --tab-bar-height: 100rpx; /* 根据实际tabBar高度调整 */
+} 
